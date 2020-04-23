@@ -100,7 +100,7 @@ public class InplaceMaxFileSelector extends BaseFileSelector {
         this.selectorContext.updateTimeConsumption();
         continue;
       }
-
+      //TODO: what is this cost used for?
       tempMaxSeqFileCost = maxSeqFileCost;
       long newCost = useTightBound ? this.memCalculator
           .calculateTightMemoryCost(unseqFile, tmpSelectedSeqFiles, this.seqFiles,

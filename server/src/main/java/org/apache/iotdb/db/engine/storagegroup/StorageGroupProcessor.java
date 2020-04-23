@@ -1343,6 +1343,7 @@ public class StorageGroupProcessor {
       try {
         Pair<MergeResource, SelectorContext> selectRes = fileSelector.selectMergedFiles();
         MergeResource mergeResource = selectRes.left;
+        //TODO: what is this attr used for?
         SelectorContext selectorContext = selectRes.right;
         if (mergeResource.getSeqFiles().size() == 0 && mergeResource.getUnseqFiles().size() == 0) {
           logger.info("{} cannot select merge candidates under the budget {}", storageGroupName,
