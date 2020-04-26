@@ -575,7 +575,6 @@ public class StorageGroupProcessor {
       return;
     }
 
-    logger.info("@+++<<<: current batch start {} end {}", start, end);
     TsFileProcessor tsFileProcessor = getOrCreateTsFileProcessor(timePartitionId, sequence);
     if (tsFileProcessor == null) {
       for (int i = start; i < end; i++) {
