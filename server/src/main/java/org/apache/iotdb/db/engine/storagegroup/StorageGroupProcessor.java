@@ -575,6 +575,7 @@ public class StorageGroupProcessor {
       return;
     }
 
+    logger.info("@+++<<<: current batch start {} end {}", start, end);
     TsFileProcessor tsFileProcessor = getOrCreateTsFileProcessor(timePartitionId, sequence);
     if (tsFileProcessor == null) {
       for (int i = start; i < end; i++) {
@@ -601,7 +602,7 @@ public class StorageGroupProcessor {
     }
     long globalLatestFlushedTime = globalLatestFlushedTimeForEachDevice.getOrDefault(
         insertTabletPlan.getDeviceId(), Long.MIN_VALUE);
-    tryToUpdateBatchInsertLastCache(insertTabletPlan, globalLatestFlushedTime);
+    tryToUpdateBatchInsertLastCache(insertTabletPlan, end -1, globalLatestFlushedTime);
 
     // check memtable size and may async try to flush the work memtable
     if (tsFileProcessor.shouldFlush()) {
@@ -609,7 +610,7 @@ public class StorageGroupProcessor {
     }
   }
 
-  public void tryToUpdateBatchInsertLastCache(InsertTabletPlan plan, Long latestFlushedTime)
+  public void tryToUpdateBatchInsertLastCache(InsertTabletPlan plan, int lastIndex, Long latestFlushedTime)
       throws WriteProcessException {
     MNode node = null;
     try {
@@ -619,7 +620,7 @@ public class StorageGroupProcessor {
         // Update cached last value with high priority
         MNode measurementNode = node.getChild(measurementList[i]);
         ((LeafMNode) measurementNode)
-            .updateCachedLast(plan.composeLastTimeValuePair(i), true, latestFlushedTime);
+            .updateCachedLast(plan.composeLastTimeValuePair(i, lastIndex), true, latestFlushedTime);
       }
     } catch (MetadataException e) {
       throw new WriteProcessException(e);

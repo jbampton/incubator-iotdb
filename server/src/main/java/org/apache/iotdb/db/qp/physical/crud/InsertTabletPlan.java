@@ -417,7 +417,7 @@ public class InsertTabletPlan extends PhysicalPlan {
     return tmpMaxTime;
   }
 
-  public TimeValuePair composeLastTimeValuePair(int measurementIndex) {
+  public TimeValuePair composeLastTimeValuePair(int measurementIndex, int lastIndex) {
     if (measurementIndex >= columns.length) {
       return null;
     }
@@ -425,33 +425,33 @@ public class InsertTabletPlan extends PhysicalPlan {
     switch (dataTypes[measurementIndex]) {
       case INT32:
         int[] intValues = (int[]) columns[measurementIndex];
-        value = new TsInt(intValues[end - 1]);
+        value = new TsInt(intValues[lastIndex]);
         break;
       case INT64:
         long[] longValues = (long[]) columns[measurementIndex];
-        value = new TsLong(longValues[end - 1]);
+        value = new TsLong(longValues[lastIndex]);
         break;
       case FLOAT:
         float[] floatValues = (float[]) columns[measurementIndex];
-        value = new TsFloat(floatValues[end - 1]);
+        value = new TsFloat(floatValues[lastIndex]);
         break;
       case DOUBLE:
         double[] doubleValues = (double[]) columns[measurementIndex];
-        value = new TsDouble(doubleValues[end - 1]);
+        value = new TsDouble(doubleValues[lastIndex]);
         break;
       case BOOLEAN:
         boolean[] boolValues = (boolean[]) columns[measurementIndex];
-        value = new TsBoolean(boolValues[end - 1]);
+        value = new TsBoolean(boolValues[lastIndex]);
         break;
       case TEXT:
         Binary[] binaryValues = (Binary[]) columns[measurementIndex];
-        value = new TsBinary(binaryValues[end - 1]);
+        value = new TsBinary(binaryValues[lastIndex]);
         break;
       default:
         throw new UnSupportedDataTypeException(
             String.format(DATATYPE_UNSUPPORTED, dataTypes[measurementIndex]));
     }
-    return new TimeValuePair(times[end - 1], value);
+    return new TimeValuePair(times[lastIndex], value);
   }
 
   public long[] getTimes() {
