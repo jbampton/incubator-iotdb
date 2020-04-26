@@ -601,7 +601,7 @@ public class StorageGroupProcessor {
     }
     long globalLatestFlushedTime = globalLatestFlushedTimeForEachDevice.getOrDefault(
         insertTabletPlan.getDeviceId(), Long.MIN_VALUE);
-    tryToUpdateBatchInsertLastCache(insertTabletPlan, end -1, globalLatestFlushedTime);
+    tryToUpdateBatchInsertLastCache(insertTabletPlan, end - 1, globalLatestFlushedTime);
 
     // check memtable size and may async try to flush the work memtable
     if (tsFileProcessor.shouldFlush()) {
