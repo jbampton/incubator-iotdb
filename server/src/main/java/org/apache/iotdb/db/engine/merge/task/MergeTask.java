@@ -159,7 +159,11 @@ public class MergeTask implements Callable<Void> {
     logger.info("{} is cleaning up", taskName);
 
     resource.clear();
+    //TODO: delete when fix merge bug
+    logger.info("resource is clean up");
     mergeContext.clear();
+    //TODO: delete when fix merge bug
+    logger.info("context is clean up");
 
     if (mergeLogger != null) {
       mergeLogger.close();
@@ -167,7 +171,11 @@ public class MergeTask implements Callable<Void> {
 
     for (TsFileResource seqFile : resource.getSeqFiles()) {
       File mergeFile = new File(seqFile.getPath() + MERGE_SUFFIX);
+      //TODO: delete when fix merge bug
+      logger.info("{} start delete", mergeFile.getName());
       mergeFile.delete();
+      //TODO: delete when fix merge bug
+      logger.info("{} is deleted", mergeFile.getName());
       seqFile.setMerging(false);
     }
     for (TsFileResource unseqFile : resource.getUnseqFiles()) {
