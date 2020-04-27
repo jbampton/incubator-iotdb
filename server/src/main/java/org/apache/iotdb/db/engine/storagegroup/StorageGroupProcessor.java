@@ -1430,6 +1430,7 @@ public class StorageGroupProcessor {
 
   @SuppressWarnings("squid:S1141")
   private void updateMergeModification(TsFileResource seqFile) {
+    logger.warn("start update merge mod");
     seqFile.getWriteQueryLock().writeLock().lock();
     try {
       // remove old modifications and write modifications generated during merge
@@ -1450,6 +1451,7 @@ public class StorageGroupProcessor {
           seqFile.getFile(), e);
     } finally {
       seqFile.getWriteQueryLock().writeLock().unlock();
+      logger.warn("end update merge mod");
     }
   }
 
@@ -1466,21 +1468,24 @@ public class StorageGroupProcessor {
 
   protected void mergeEndAction(List<TsFileResource> seqFiles, List<TsFileResource> unseqFiles,
       File mergeLog) {
-    logger.info("{} a merge task is ending...", storageGroupName);
+    logger.warn("{} a merge task is ending...", storageGroupName);
 
     if (unseqFiles.isEmpty()) {
       // merge runtime exception arose, just end this merge
       isMerging = false;
-      logger.info("{} a merge task abnormally ends", storageGroupName);
+      logger.warn("{} a merge task abnormally ends", storageGroupName);
       return;
     }
 
+    logger.warn("start delete unseq files");
     removeUnseqFiles(unseqFiles);
+    logger.warn("end delete");
 
     for (int i = 0; i < seqFiles.size(); i++) {
       TsFileResource seqFile = seqFiles.get(i);
       mergeLock.writeLock().lock();
       try {
+        logger.warn("start merge modification");
         updateMergeModification(seqFile);
         if (i == seqFiles.size() - 1) {
           //FIXME if there is an exception, the the modification file will be not closed.
@@ -1488,11 +1493,12 @@ public class StorageGroupProcessor {
           isMerging = false;
           mergeLog.delete();
         }
+        logger.warn("end merge modification");
       } finally {
         mergeLock.writeLock().unlock();
       }
     }
-    logger.info("{} a merge task ends", storageGroupName);
+    logger.warn("{} a merge task ends", storageGroupName);
   }
 
   /**
